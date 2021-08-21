@@ -3,6 +3,7 @@
 import Button from './components/Button';
 import { Add16, Home20, Help20 } from '@carbon/icons-react';
 
+import Version from './components/Version';
 import Updater from './components/Updater';
 import { Tile } from './components/Tile';
 import { Content, PageContainer, Header, HeaderName, HeaderMenuButton, SideNav, SideNavMenu, SideNavMenuItem, SideNavItems, SideNavLink } from './components/UIShell';
@@ -42,6 +43,7 @@ const About = () => {
 	return (
 		<div>
 			<h1>About</h1>
+			<Version />
 			<Updater />
 		</div>
 	);
