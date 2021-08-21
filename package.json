@@ -1,6 +1,6 @@
 {
 	"name": "highlight",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"private": true,
 	"dependencies": {
 		"@carbon/icons-react": "^10.37.0",
@@ -21,7 +21,7 @@
 	"scripts": {
 		"start": "concurrently -k \"cross-env BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && electronmon .\"",
 		"build": "react-scripts build",
-		"deploy": "yarn build && electron-builder -w -c.extraMetadata.main=build/electron.js --publish always",
+		"deploy": "yarn build && electron-builder -c.extraMetadata.main=build/electron.js --win -p always -c electron-builder.yml",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
 		"dist:win": "yarn build && electron-builder -w -c.extraMetadata.main=build/electron.js",
@@ -63,27 +63,10 @@
 	"homepage": "./",
 	"main": "./public/electron.js",
 	"build": {
-		"appId": "com.electron.my_app",
-		"productName": "My App",
-		"files": [
-			"build/**/*",
-			"node_modules/**/*"
-		],
-		"directories": {
-			"buildResources": "public"
-		},
-		"mac": {
-			"target": "dmg",
-			"category": "utilities",
-			"type": "development"
-		},
-		"win": {
-			"target": "nsis",
-			"icon": "./public/logo512.png"
-		},
-		"linux": {
-			"target": "deb",
-			"category": "Development"
-		}
-	}
+        "appId": "com.Highlight",
+        "files": ["build/**/*", "node_modules/**/*"],
+        "directories": {
+            "buildResources": "public"
+        }
+    }
 }
