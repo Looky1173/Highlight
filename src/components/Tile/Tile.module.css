@@ -1,0 +1,25 @@
+.tile {
+	position: relative;
+	display: block;
+	min-width: 8rem;
+	min-height: 4rem;
+	padding: 1rem;
+	background-color: #f4f4f4;
+	outline: 2px solid transparent;
+	outline-offset: -2px;
+}
+
+.tile:focus {
+	outline: 2px solid #0f62fe;
+	outline-offset: -2px;
+}
+
+@media screen and (prefers-contrast) {
+	.tile:focus {
+		outline-style: dotted;
+	}
+}
+
+.tile-light {
+	background-color: #fff;
+}

@@ -1,0 +1,78 @@
+.link {
+	font-size: 0.875rem;
+	font-weight: 400;
+	line-height: 1.29;
+	letter-spacing: 0.16px;
+	display: inline-flex;
+	color: #0f62fe;
+	outline: none;
+	text-decoration: none;
+	transition: color 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+.link:hover {
+	color: #0043ce;
+	text-decoration: underline;
+}
+.link:active,
+.link:active:visited,
+.link:active:visited:hover {
+	color: #161616;
+	text-decoration: underline;
+}
+.link:focus {
+	outline: 1px solid #0f62fe;
+}
+@media screen and (prefers-contrast) {
+	.link:focus {
+		outline-style: dotted;
+	}
+}
+.link:visited {
+	color: #0f62fe;
+}
+.link:visited:hover {
+	color: #0043ce;
+}
+.link-disabled,
+.link-disabled:hover {
+	font-size: 0.875rem;
+	font-weight: 400;
+	line-height: 1.29;
+	letter-spacing: 0.16px;
+	color: #c6c6c6;
+	cursor: not-allowed;
+	font-weight: 400;
+	text-decoration: none;
+}
+.link.link-visited:visited {
+	color: #8a3ffc;
+}
+.link.link-visited:visited:hover {
+	color: #0043ce;
+}
+.link.link-inline {
+	text-decoration: underline;
+}
+.link.link-inline:focus,
+.link.link-inline:visited {
+	text-decoration: none;
+}
+.link-disabled.link-inline {
+	text-decoration: underline;
+}
+.link-sm {
+	font-size: 0.75rem;
+	line-height: 1.34;
+	letter-spacing: 0.32px;
+}
+.link-lg {
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: 1.375;
+	letter-spacing: 0;
+}
+.link-icon {
+	display: inline-flex;
+	align-self: center;
+	margin-left: 0.5rem;
+}
