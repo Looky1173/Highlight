@@ -30,7 +30,7 @@ const Updater = () => {
 					break;
 				case 'download-progress':
 					setUpdateStatus('Working on update...');
-					setUpdateDetails(`Downloading update... (${data['progress']['total']}/${data['progress']['transferred']}B - ${data['progress']['percent']}%)`);
+					setUpdateDetails(`Downloading update... (${data['progress']['total']}/${data['progress']['transferred']}B - ${Math.round(data['progress']['percent'])}%)`);
 					break;
 				case 'update-downloaded':
 					setUpdateStatus('Update downloaded');
@@ -60,7 +60,17 @@ const Updater = () => {
 	return (
 		<Tile>
 			<Flexbox wrap='wrap' gap='15px'>
-				<FlexItem centered>{isUpToDate ? <CheckmarkOutline32 style={iconStyles} /> : updateError ? <WarningFilled32 style={{...iconStyles, color: 'red' }} /> : isReadyToInstall ? <Information32 style={iconStyles} /> : <Spinner style={iconStyles} />}</FlexItem>
+				<FlexItem centered>
+					{isUpToDate ? (
+						<CheckmarkOutline32 style={iconStyles} />
+					) : updateError ? (
+						<WarningFilled32 style={{ ...iconStyles, color: 'red' }} />
+					) : isReadyToInstall ? (
+						<Information32 style={iconStyles} />
+					) : (
+						<Spinner style={iconStyles} />
+					)}
+				</FlexItem>
 				<FlexItem grow={1} noFlex>
 					<h3>{updateStatus}</h3>
 					{updateDetails && <span>{updateDetails}</span>}
