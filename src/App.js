@@ -10,9 +10,6 @@ import { Content, PageContainer, Header, HeaderName, HeaderMenuButton, SideNav, 
 
 import { HashRouter, Link, Route, Switch } from 'react-router-dom';
 
-// When the application loads, check for updates and download them in the background
-window.api.send('toMainUpdates');
-
 const Home = () => {
 	return (
 		<div>
