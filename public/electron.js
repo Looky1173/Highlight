@@ -81,30 +81,41 @@ ipcMain.on('toMain', (event, data) => {
 	}
 });
 
+let isCheckingForUpdates = false;
+
 ipcMain.on('toMainUpdates', (event, data) => {
-	if (!isDev) {
-		autoUpdater.checkForUpdates();
-		autoUpdater.on('update-available', () => {
-			event.reply('fromMainUpdates', { status: 'update-available' });
-		});
-		autoUpdater.on('update-not-available', () => {
-			event.reply('fromMainUpdates', { status: 'update-not-available' });
-		});
-		autoUpdater.on('download-progress', (data) => {
-			event.reply('fromMainUpdates', { status: 'download-progress', progress: { percent: data.percent, bytesPerSecond: data.bytesPerSecond, total: data.total, transferred: data.transferred } });
-		});
-		autoUpdater.on('update-downloaded', () => {
-			event.reply('fromMainUpdates', { status: 'update-downloaded' });
-		});
-		autoUpdater.on('error', (error) => {
-			event.reply('fromMainUpdates', { status: 'error', error: error });
-		});
-	} else {
-		// During development, do not check for updates
-		setTimeout(function () {
-			event.reply('fromMainUpdates', { status: 'update-not-available' });
-		}, 3000);
+	if (!isCheckingForUpdates) {
+		if (!isDev) {
+			autoUpdater.checkForUpdates();
+			autoUpdater.on('update-available', () => {
+				event.reply('fromMainUpdates', { status: 'update-available' });
+			});
+			autoUpdater.on('update-not-available', () => {
+				event.reply('fromMainUpdates', { status: 'update-not-available' });
+			});
+			autoUpdater.on('download-progress', (data) => {
+				event.reply('fromMainUpdates', {
+					status: 'download-progress',
+					progress: { percent: data.percent, bytesPerSecond: data.bytesPerSecond, total: data.total, transferred: data.transferred },
+				});
+			});
+			autoUpdater.on('update-downloaded', () => {
+				event.reply('fromMainUpdates', { status: 'update-downloaded' });
+				isCheckingForUpdates = false;
+			});
+			autoUpdater.on('error', (error) => {
+				event.reply('fromMainUpdates', { status: 'error', error: error });
+				isCheckingForUpdates = false;
+			});
+		} else {
+			// During development, do not check for updates
+			setTimeout(function () {
+				event.reply('fromMainUpdates', { status: 'update-not-available' });
+				isCheckingForUpdates = false;
+			}, 3000);
+		}
 	}
+	isCheckingForUpdates = true;
 });
 
 ipcMain.on('toMainInstallUpdate', () => {

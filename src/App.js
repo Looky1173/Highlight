@@ -10,6 +10,9 @@ import { Content, PageContainer, Header, HeaderName, HeaderMenuButton, SideNav, 
 
 import { HashRouter, Link, Route, Switch } from 'react-router-dom';
 
+// Check for updates on startup
+window.api.send('toMainUpdates');
+
 const Home = () => {
 	return (
 		<div>
