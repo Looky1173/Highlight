@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 
 import { CheckmarkOutline32, Information32, WarningFilled32 } from '@carbon/icons-react';
 
-import { Row, Column } from './Grid';
+import { Flexbox, FlexItem } from './Layout';
 import { Tile } from './Tile';
 import Spinner from './Spinner';
 import Button from './Button';
+
+const iconStyles = { width: '50px', height: '50px' };
 
 const Updater = () => {
 	const [disableInstallButton, setDisableInstallButton] = useState(false);
@@ -39,9 +41,10 @@ const Updater = () => {
 					setUpdateStatus('Uh, oh!');
 					setUpdateDetails('An error occurred while trying to update! Check the console for details.');
 					setUpdateError(true);
+					console.error('UPDATE ERROR', data['error']);
 					break;
 			}
-			console.log(data);
+			console.log('UPDATE INFO', data);
 		});
 	}, []);
 
@@ -56,24 +59,14 @@ const Updater = () => {
 
 	return (
 		<Tile>
-			<Row>
-				<Column widths={[1]}>
-					{isUpToDate ? (
-						<CheckmarkOutline32 style={{ width: '55px', height: '55px' }} />
-					) : updateError ? (
-						<WarningFilled32 style={{ width: '55px', height: '55px', color: 'red' }} />
-					) : isReadyToInstall ? (
-						<Information32 style={{ width: '55px', height: '55px' }} />
-					) : (
-						<Spinner />
-					)}
-				</Column>
-				<Column widths={[isReadyToInstall || updateError ? 7 : 11]}>
+			<Flexbox wrap='wrap' gap='15px'>
+				<FlexItem centered>{isUpToDate ? <CheckmarkOutline32 style={iconStyles} /> : updateError ? <WarningFilled32 style={{...iconStyles, color: 'red' }} /> : isReadyToInstall ? <Information32 style={iconStyles} /> : <Spinner style={iconStyles} />}</FlexItem>
+				<FlexItem grow={1} noFlex>
 					<h3>{updateStatus}</h3>
 					{updateDetails && <span>{updateDetails}</span>}
-				</Column>
+				</FlexItem>
 				{(isReadyToInstall || updateError) && (
-					<Column widths={[4]}>
+					<FlexItem right middle>
 						{!updateError ? (
 							<Button
 								onClick={restartAndInstallUpdate}
@@ -88,9 +81,9 @@ const Updater = () => {
 								Retry update
 							</Button>
 						)}
-					</Column>
+					</FlexItem>
 				)}
-			</Row>
+			</Flexbox>
 		</Tile>
 	);
 };

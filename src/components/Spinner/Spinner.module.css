@@ -4,7 +4,7 @@
 	display: inline-block;
 	width: 50px;
 	height: 50px;
-	background: rgba(25, 165, 152, 0.5);
+	background: #002d9c;
 	border-radius: 50%;
 	overflow: hidden;
 }
@@ -23,13 +23,13 @@
 	animation: spinner 3s infinite;
 	transform-origin: 0 50%;
 	left: 0;
-	background: #c7efcf;
+	background: #0f62fe;
 }
 .spinner:after {
 	animation: spinner 3s 0.2s reverse infinite;
 	transform-origin: 100% 50%;
 	right: 0;
-	background: #eef5db;
+	background: #78a9ff;
 }
 /*! CSS Used keyframes */
 
