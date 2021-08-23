@@ -94,6 +94,7 @@ ipcMain.on('toMainUpdates', (event, data) => {
 		});
 		autoUpdater.on('update-not-available', () => {
 			event.reply('fromMainUpdates', { status: 'update-not-available' });
+			isCheckingForUpdates = false;
 		});
 		autoUpdater.on('download-progress', (data) => {
 			event.reply('fromMainUpdates', {
