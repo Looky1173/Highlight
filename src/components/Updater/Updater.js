@@ -2,23 +2,38 @@ import { useEffect, useState } from 'react';
 
 import { CheckmarkOutline32, Information32, WarningFilled32 } from '@carbon/icons-react';
 
-import { Flexbox, FlexItem } from './Layout';
-import { Tile } from './Tile';
-import Spinner from './Spinner';
-import Button from './Button';
+// import { Flexbox, FlexItem } from './Layout';
+// import { Tile } from './Tile';
+// import Spinner from './Spinner';
+// import Button from './Button';
 
-const iconStyles = { width: '50px', height: '50px' };
+import { Button, Spinner, Fieldset, Grid } from '@geist-ui/react';
+import { Info, CheckInCircle, AlertCircleFill } from '@geist-ui/react-icons'
+
+import styles from './Updater.module.css';
 
 const Updater = () => {
+	const [version, setVersion] = useState(null);
+
 	const [disableInstallButton, setDisableInstallButton] = useState(false);
 	const [isUpToDate, setIsUpToDate] = useState(false);
 	const [isReadyToInstall, setIsReadyToInstall] = useState(false);
 	const [updateError, setUpdateError] = useState(false);
 	const [updateStatus, setUpdateStatus] = useState('Checking for updates...');
 	const [updateDetails, setUpdateDetails] = useState(null);
-	useEffect(() => {
+
+	const checkForUpdates = () => {
+		setDisableInstallButton(false);
+		setIsUpToDate(false);
+		setIsReadyToInstall(false);
+		setUpdateError(false);
+		setUpdateStatus('Checking for updates...');
+		setUpdateDetails(null);
+
 		window.api.send('toMainUpdates');
+		console.log('send');
 		window.api.receive('fromMainUpdates', function (data) {
+			console.log('receive');
 			switch (data['status']) {
 				case 'update-available':
 					setUpdateStatus('Working on update...');
@@ -46,19 +61,72 @@ const Updater = () => {
 			}
 			console.log('UPDATE INFO', data);
 		});
+	};
+
+	useEffect(() => {
+		checkForUpdates();
+		window.api.send('toMain', ['get-version']);
+		window.api.receive('fromMain', function (data) {
+			if (data[0] === 'version') {
+				setVersion(data[1]);
+			}
+		});
 	}, []);
 
-	function restartAndInstallUpdate() {
+	const restartAndInstallUpdate = () => {
 		setDisableInstallButton(true);
 		window.api.send('toMainInstallUpdate');
 	}
 
-	function retryUpdate() {
-		window.location.reload(false);
-	}
-
 	return (
-		<Tile>
+		<Fieldset>
+			<Grid.Container gap={2} style={{ padding: '0' }}>
+				<Grid className={styles['centered']}>
+					<div className={styles['update-icon']}>
+						{isUpToDate ? (
+							<CheckInCircle />
+						) : updateError ? (
+							<AlertCircleFill color='red' />
+						) : isReadyToInstall ? (
+							<Info />
+						) : (
+							<Spinner style={{width: '50px', height: '50px'}} />
+						)}
+					</div>
+				</Grid>
+				<Grid>
+					<h3 style={{margin: '0'}}>{updateStatus}</h3>
+					{updateDetails && <span>{updateDetails}</span>}
+				</Grid>
+			</Grid.Container>
+			<Fieldset.Footer>
+				{version && `You are on version ${version}`}
+				{(isReadyToInstall || updateError) && (
+					<>
+						{!updateError ? (
+							<Button
+							auto scale={1 / 2}
+								onClick={restartAndInstallUpdate}
+								loading={disableInstallButton}
+								type='success'
+							>
+								Restart app and install update
+							</Button>
+						) : (
+							<Button auto scale={1 / 2} onClick={checkForUpdates} type='secondary'>
+								Retry update
+							</Button>
+						)}
+					</>
+				)}
+				{!(isReadyToInstall || updateError) && (
+					<Button auto scale={1 / 2} onClick={checkForUpdates} disabled={!isUpToDate}>
+						Check for updates
+					</Button>
+				)}
+			</Fieldset.Footer>
+		</Fieldset>
+		/*<>
 			<Flexbox wrap='wrap' gap='15px'>
 				<FlexItem centered>
 					{isUpToDate ? (
@@ -94,7 +162,7 @@ const Updater = () => {
 					</FlexItem>
 				)}
 			</Flexbox>
-		</Tile>
+		</>*/
 	);
 };
 

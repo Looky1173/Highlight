@@ -1,18 +1,23 @@
 // import Header from './components/Header.js';
-//import Skeleton from './components/Skeleton';
-import Button from './components/Button';
+// import Skeleton from './components/Skeleton';
+// import Button from './components/Button';
 import { Add16, Home20, Help20 } from '@carbon/icons-react';
 
 import Version from './components/Version';
-import Updater from './components/Updater';
+import Updater from './components/Updater/Updater';
 import { Tile } from './components/Tile';
 import { Content, PageContainer, Header, HeaderName, HeaderMenuButton, SideNav, SideNavMenu, SideNavMenuItem, SideNavItems, SideNavLink } from './components/UIShell';
 
 import { HashRouter, Link, Route, Switch } from 'react-router-dom';
 
+import { useState } from 'react';
+
+import { Page, Button, Modal, useModal } from '@geist-ui/react';
+
 // Check for updates on startup
 window.api.send('toMainUpdates');
 
+/*
 const Home = () => {
 	return (
 		<div>
@@ -48,13 +53,31 @@ const About = () => {
 			<Updater />
 		</div>
 	);
-};
+};*/
 
 function App() {
 	const expandOnHover = false;
 	const withSideNav = true;
+
+	const { visible: aboutVisible, setVisible: setAboutVisible, bindings: test } = useModal();
+
 	return (
-		<HashRouter>
+		<Page dotBackdrop>
+			<Button auto onClick={() => setAboutVisible(true)}>
+				Updates
+			</Button>
+			<Modal width='700px' {...test}>
+				<Modal.Title>About</Modal.Title>
+				<Modal.Subtitle>Highlight (C) 2021</Modal.Subtitle>
+				<Modal.Content>
+					<Updater />
+				</Modal.Content>
+				<Modal.Action passive onClick={() => setAboutVisible(false)}>
+					Close
+				</Modal.Action>
+			</Modal>
+		</Page>
+		/*<HashRouter>
 			<div className='App'>
 				<PageContainer
 					render={({ windowHash, isSideNavExpanded, onClickSideNavExpand }) => (
@@ -104,7 +127,7 @@ function App() {
 					)}
 				/>
 			</div>
-		</HashRouter>
+		</HashRouter>*/
 	);
 }
 

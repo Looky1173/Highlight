@@ -1,9 +1,11 @@
 {
 	"name": "highlight",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"private": true,
 	"dependencies": {
 		"@carbon/icons-react": "^10.37.0",
+		"@geist-ui/react": "^2.2.0",
+		"@geist-ui/react-icons": "^1.0.1",
 		"@testing-library/jest-dom": "^5.11.4",
 		"@testing-library/react": "^11.1.0",
 		"@testing-library/user-event": "^12.1.10",
@@ -30,9 +32,9 @@
 		"react-start": "react-scripts start"
 	},
 	"repository": {
-		"type" : "git",
-		"url" : "https://github.com/Looky1173/Highlight.git"
-	  },
+		"type": "git",
+		"url": "https://github.com/Looky1173/Highlight.git"
+	},
 	"eslintConfig": {
 		"extends": [
 			"react-app",
@@ -63,10 +65,13 @@
 	"homepage": "./",
 	"main": "./public/electron.js",
 	"build": {
-        "appId": "com.Highlight",
-        "files": ["build/**/*", "node_modules/**/*"],
-        "directories": {
-            "buildResources": "public"
-        }
-    }
+		"appId": "com.Highlight",
+		"files": [
+			"build/**/*",
+			"node_modules/**/*"
+		],
+		"directories": {
+			"buildResources": "public"
+		}
+	}
 }

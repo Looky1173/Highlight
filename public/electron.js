@@ -84,6 +84,7 @@ ipcMain.on('toMain', (event, data) => {
 let isCheckingForUpdates = false;
 
 ipcMain.on('toMainUpdates', (event, data) => {
+	console.log('Update check requested...')
 	if (!isDev) {
 		if (!isCheckingForUpdates) {
 			isCheckingForUpdates = true;
@@ -113,6 +114,7 @@ ipcMain.on('toMainUpdates', (event, data) => {
 	} else {
 		// During development, do not check for updates
 		setTimeout(function () {
+			console.log('Replying to update request...')
 			event.reply('fromMainUpdates', { status: 'update-not-available' });
 			isCheckingForUpdates = false;
 		}, 3000);

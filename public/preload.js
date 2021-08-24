@@ -12,7 +12,7 @@ contextBridge.exposeInMainWorld('api', {
 		let validChannels = ['fromMain', 'fromMainUpdates'];
 		if (validChannels.includes(channel)) {
 			// Deliberately strip event as it includes `sender`
-			ipcRenderer.on(channel, (event, ...args) => func(...args));
+			ipcRenderer.once(channel, (event, ...args) => func(...args));
 		}
 	},
 });
