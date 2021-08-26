@@ -1,133 +1,71 @@
-// import Header from './components/Header.js';
-// import Skeleton from './components/Skeleton';
-// import Button from './components/Button';
-import { Add16, Home20, Help20 } from '@carbon/icons-react';
-
-import Version from './components/Version';
 import Updater from './components/Updater/Updater';
-import { Tile } from './components/Tile';
-import { Content, PageContainer, Header, HeaderName, HeaderMenuButton, SideNav, SideNavMenu, SideNavMenuItem, SideNavItems, SideNavLink } from './components/UIShell';
-
-import { HashRouter, Link, Route, Switch } from 'react-router-dom';
+import Header from './components/Header';
+import ThemeSelector from './components/ThemeSelector';
 
 import { useState } from 'react';
 
-import { Page, Button, Modal, useModal } from '@geist-ui/react';
+import { GeistProvider, CssBaseline } from '@geist-ui/react';
+import { Page, Button, Link, Modal, useModal, Text, Spacer, Popover } from '@geist-ui/react';
+import { Settings } from '@geist-ui/react-icons';
 
 // Check for updates on startup
 window.api.send('toMainUpdates');
 
-/*
-const Home = () => {
-	return (
-		<div>
-			<h1>Home</h1>
-		</div>
-	);
-};
-
-const Editor = () => {
-	return (
-		<div>
-			<h1>Home</h1>
-			<h2>Editor</h2>
-		</div>
-	);
-};
-
-const Cards = () => {
-	return (
-		<div>
-			<h1>Home</h1>
-			<h2>Cards</h2>
-		</div>
-	);
-};
-
-const About = () => {
-	return (
-		<div>
-			<h1>About</h1>
-			<Version />
-			<br />
-			<Updater />
-		</div>
-	);
-};*/
-
 function App() {
-	const expandOnHover = false;
-	const withSideNav = true;
+	const { visible: aboutVisible, setVisible: setAboutVisible, bindings: aboutModal } = useModal();
+	const [theme, setTheme] = useState('light');
 
-	const { visible: aboutVisible, setVisible: setAboutVisible, bindings: test } = useModal();
+	const [settingsVisible, setSettingsVisible] = useState(false);
+	const settingsPopoverChangeHandler = (next) => {
+		setSettingsVisible(next);
+	};
+	const settingsPopover = () => (
+		<div style={{ minWidth: 'max-content' }}>
+			<Popover.Item title>
+				<span>Settings</span>
+			</Popover.Item>
+			<Popover.Item>
+				<ThemeSelector onThemeChange={(next) => setTheme(next)} />
+			</Popover.Item>
+			<Popover.Item line />
+			<Popover.Item>
+				<span onClick={() => setAboutVisible(true)}>About Highlight</span>
+			</Popover.Item>
+			<Popover.Item line />
+			<Popover.Item>
+				<span onClick={() => setSettingsVisible(false)}>Close</span>
+			</Popover.Item>
+		</div>
+	);
 
 	return (
-		<Page dotBackdrop>
-			<Button auto onClick={() => setAboutVisible(true)}>
-				Updates
-			</Button>
-			<Modal width='700px' {...test}>
-				<Modal.Title>About</Modal.Title>
-				<Modal.Subtitle>Highlight (C) 2021</Modal.Subtitle>
-				<Modal.Content>
-					<Updater />
-				</Modal.Content>
-				<Modal.Action passive onClick={() => setAboutVisible(false)}>
-					Close
-				</Modal.Action>
-			</Modal>
-		</Page>
-		/*<HashRouter>
-			<div className='App'>
-				<PageContainer
-					render={({ windowHash, isSideNavExpanded, onClickSideNavExpand }) => (
-						<>
-							<Header>
-								<HeaderMenuButton aria-label='Open menu' isCollapsible onClick={onClickSideNavExpand} isActive={isSideNavExpanded} />
-								<HeaderName href='#' prefix='Highlight'>
-									<Switch>
-										<Route exact path='/'>
-											Home
-										</Route>
-										<Route exact path='/home/editor'>
-											Editor
-										</Route>
-										<Route exact path='/home/cards'>
-											Cards
-										</Route>
-										<Route exact path='/about'>
-											About
-										</Route>
-									</Switch>
-								</HeaderName>
-								<SideNav aria-label='Side navigation' isRail expandOnHover={expandOnHover} expanded={isSideNavExpanded} onOverlayClick={onClickSideNavExpand}>
-									<SideNavItems>
-										<SideNavMenu renderIcon={Home20} title='Home' isActive={(windowHash && windowHash.startsWith('/home')) || windowHash === '/'}>
-											<SideNavMenuItem href='#/home/editor'>Editor</SideNavMenuItem>
-											<SideNavMenuItem href='#/home/cards'>Cards</SideNavMenuItem>
-										</SideNavMenu>
-										<SideNavLink href='#/about' renderIcon={Help20} isActive={windowHash && windowHash.startsWith('/about')}>
-											About
-										</SideNavLink>
-									</SideNavItems>
-								</SideNav>
-							</Header>
-
-							<div style={withSideNav ? { overflowX: 'hidden' } : {}}>
-								<Content withSideNav={withSideNav} isSideNavExpanded={isSideNavExpanded}>
-									<Switch>
-										<Route exact path='/' component={Home} />
-										<Route exact path='/home/editor' component={Editor} />
-										<Route exact path='/home/cards' component={Cards} />
-										<Route exact path='/about' component={About} />
-									</Switch>
-								</Content>
-							</div>
-						</>
-					)}
-				/>
-			</div>
-		</HashRouter>*/
+		<GeistProvider themeType={theme}>
+			<CssBaseline />
+			<Header>
+				<Header.Left>
+					<Text h3 style={{ marginBottom: '0' }}>
+						Highlight
+					</Text>
+				</Header.Left>
+				<Header.Right>
+					<Popover content={settingsPopover} visible={settingsVisible} onVisibleChange={settingsPopoverChangeHandler} placement='bottomEnd'>
+						<Settings />
+					</Popover>
+				</Header.Right>
+			</Header>
+			<Page dotBackdrop>
+				<Modal width='700px' {...aboutModal}>
+					<Modal.Title>About</Modal.Title>
+					<Modal.Subtitle>Highlight (C) 2021</Modal.Subtitle>
+					<Modal.Content>
+						<Updater />
+					</Modal.Content>
+					<Modal.Action passive onClick={() => setAboutVisible(false)}>
+						Close
+					</Modal.Action>
+				</Modal>
+			</Page>
+		</GeistProvider>
 	);
 }
 

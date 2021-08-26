@@ -1,18 +1,13 @@
-import { useEffect, useState } from 'react';
-
-import { CheckmarkOutline32, Information32, WarningFilled32 } from '@carbon/icons-react';
-
-// import { Flexbox, FlexItem } from './Layout';
-// import { Tile } from './Tile';
-// import Spinner from './Spinner';
-// import Button from './Button';
+import { useEffect, useState, useRef } from 'react';
 
 import { Button, Spinner, Fieldset, Grid } from '@geist-ui/react';
-import { Info, CheckInCircle, AlertCircleFill } from '@geist-ui/react-icons'
+import { Info, CheckInCircle, AlertCircleFill } from '@geist-ui/react-icons';
 
 import styles from './Updater.module.css';
 
 const Updater = () => {
+	const _isMounted = useRef(true);
+
 	const [version, setVersion] = useState(null);
 
 	const [disableInstallButton, setDisableInstallButton] = useState(false);
@@ -33,33 +28,35 @@ const Updater = () => {
 		window.api.send('toMainUpdates');
 		console.log('send');
 		window.api.receive('fromMainUpdates', function (data) {
-			console.log('receive');
-			switch (data['status']) {
-				case 'update-available':
-					setUpdateStatus('Working on update...');
-					setUpdateDetails('A newer version of the app is available and will be downloaded soon');
-					break;
-				case 'update-not-available':
-					setIsUpToDate(true);
-					setUpdateStatus('The app is up-to-date');
-					break;
-				case 'download-progress':
-					setUpdateStatus('Working on update...');
-					setUpdateDetails(`Downloading update... (${data['progress']['total']}/${data['progress']['transferred']}B - ${Math.round(data['progress']['percent'])}%)`);
-					break;
-				case 'update-downloaded':
-					setUpdateStatus('Update downloaded');
-					setUpdateDetails('You need to restart the app to apply the update');
-					setIsReadyToInstall(true);
-					break;
-				case 'error':
-					setUpdateStatus('Uh, oh!');
-					setUpdateDetails('An error occurred while trying to update! Check the console for details.');
-					setUpdateError(true);
-					console.error('UPDATE ERROR', data['error']);
-					break;
+			if (_isMounted.current) {
+				console.log('receive');
+				switch (data['status']) {
+					case 'update-available':
+						setUpdateStatus('Working on update...');
+						setUpdateDetails('A newer version of the app is available and will be downloaded soon');
+						break;
+					case 'update-not-available':
+						setIsUpToDate(true);
+						setUpdateStatus('The app is up-to-date');
+						break;
+					case 'download-progress':
+						setUpdateStatus('Working on update...');
+						setUpdateDetails(`Downloading update... (${data['progress']['total']}/${data['progress']['transferred']}B - ${Math.round(data['progress']['percent'])}%)`);
+						break;
+					case 'update-downloaded':
+						setUpdateStatus('Update downloaded');
+						setUpdateDetails('You need to restart the app to apply the update');
+						setIsReadyToInstall(true);
+						break;
+					case 'error':
+						setUpdateStatus('Uh, oh!');
+						setUpdateDetails('An error occurred while trying to update! Check the console for details.');
+						setUpdateError(true);
+						console.error('UPDATE ERROR', data['error']);
+						break;
+				}
+				console.log('UPDATE INFO', data);
 			}
-			console.log('UPDATE INFO', data);
 		});
 	};
 
@@ -71,31 +68,26 @@ const Updater = () => {
 				setVersion(data[1]);
 			}
 		});
+		return () => {
+			_isMounted.current = false;
+		};
 	}, []);
 
 	const restartAndInstallUpdate = () => {
 		setDisableInstallButton(true);
 		window.api.send('toMainInstallUpdate');
-	}
+	};
 
 	return (
 		<Fieldset>
 			<Grid.Container gap={2} style={{ padding: '0' }}>
 				<Grid className={styles['centered']}>
 					<div className={styles['update-icon']}>
-						{isUpToDate ? (
-							<CheckInCircle />
-						) : updateError ? (
-							<AlertCircleFill color='red' />
-						) : isReadyToInstall ? (
-							<Info />
-						) : (
-							<Spinner style={{width: '50px', height: '50px'}} />
-						)}
+						{isUpToDate ? <CheckInCircle /> : updateError ? <AlertCircleFill color='red' /> : isReadyToInstall ? <Info /> : <Spinner style={{ width: '50px', height: '50px' }} />}
 					</div>
 				</Grid>
 				<Grid>
-					<h3 style={{margin: '0'}}>{updateStatus}</h3>
+					<h3 style={{ margin: '0' }}>{updateStatus}</h3>
 					{updateDetails && <span>{updateDetails}</span>}
 				</Grid>
 			</Grid.Container>
@@ -104,12 +96,7 @@ const Updater = () => {
 				{(isReadyToInstall || updateError) && (
 					<>
 						{!updateError ? (
-							<Button
-							auto scale={1 / 2}
-								onClick={restartAndInstallUpdate}
-								loading={disableInstallButton}
-								type='success'
-							>
+							<Button auto scale={1 / 2} onClick={restartAndInstallUpdate} loading={disableInstallButton} type='success'>
 								Restart app and install update
 							</Button>
 						) : (
@@ -126,43 +113,6 @@ const Updater = () => {
 				)}
 			</Fieldset.Footer>
 		</Fieldset>
-		/*<>
-			<Flexbox wrap='wrap' gap='15px'>
-				<FlexItem centered>
-					{isUpToDate ? (
-						<CheckmarkOutline32 style={iconStyles} />
-					) : updateError ? (
-						<WarningFilled32 style={{ ...iconStyles, color: 'red' }} />
-					) : isReadyToInstall ? (
-						<Information32 style={iconStyles} />
-					) : (
-						<Spinner style={iconStyles} />
-					)}
-				</FlexItem>
-				<FlexItem grow={1} noFlex>
-					<h3>{updateStatus}</h3>
-					{updateDetails && <span>{updateDetails}</span>}
-				</FlexItem>
-				{(isReadyToInstall || updateError) && (
-					<FlexItem right middle>
-						{!updateError ? (
-							<Button
-								onClick={restartAndInstallUpdate}
-								disabled={disableInstallButton}
-								style={{ maxWidth: '100%', width: '100%', justifyContent: 'center', paddingLeft: '1rem', paddingRight: '1rem' }}
-								kind='primary'
-							>
-								Restart App and Install Update
-							</Button>
-						) : (
-							<Button onClick={retryUpdate} style={{ maxWidth: '100%', width: '100%', justifyContent: 'center', paddingLeft: '1rem', paddingRight: '1rem' }} kind='primary'>
-								Retry update
-							</Button>
-						)}
-					</FlexItem>
-				)}
-			</Flexbox>
-		</>*/
 	);
 };
 

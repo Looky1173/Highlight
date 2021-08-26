@@ -4,14 +4,13 @@ import './styles/index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-import { GeistProvider, CssBaseline } from '@geist-ui/react';
+import { StyleSheetManager } from 'styled-components';
 
 ReactDOM.render(
 	<React.StrictMode>
-		<GeistProvider>
-			<CssBaseline />
+		<StyleSheetManager disableVendorPrefixes>
 			<App />
-		</GeistProvider>
+		</StyleSheetManager>
 	</React.StrictMode>,
 	document.getElementById('root')
 );
